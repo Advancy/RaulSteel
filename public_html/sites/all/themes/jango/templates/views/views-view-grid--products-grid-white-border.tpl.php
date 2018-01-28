@@ -1,0 +1,25 @@
+<?php
+
+/**
+ * @file
+ * Default simple view template to display a rows in a grid.
+ *
+ * - $rows contains a nested array of rows. Each row contains an array of
+ *   columns.
+ *
+ * @ingroup views_templates
+ */
+// Match Column numbers to Bootsrap class
+$column_number = isset($view->style_plugin->options['columns']) ? $view->style_plugin->options['columns'] : 3;
+?>
+<div class="c-content-isotope-grid c-opt-3">
+  <?php foreach ($rows as $row_number => $columns): ?>
+    <?php foreach ($columns as $column_number => $item): ?>
+      <div class="c-content-isotope-item">
+        <div class="c-content-isotope-image-container">
+          <?php print $item; ?>
+        </div>
+      </div>
+    <?php endforeach; ?>
+  <?php endforeach; ?>
+</div>

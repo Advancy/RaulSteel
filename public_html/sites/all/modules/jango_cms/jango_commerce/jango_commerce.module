@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Jango Commerce feature.
+ */
+
+include_once 'jango_commerce.features.inc';

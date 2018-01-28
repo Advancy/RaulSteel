@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Jango Mega Sliders feature.
+ */
+
+include_once 'jango_mega_sliders.features.inc';

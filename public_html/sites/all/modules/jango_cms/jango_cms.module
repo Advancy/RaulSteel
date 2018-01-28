@@ -1,0 +1,732 @@
+<?php
+
+function _get_node_field($node, $field, $lang = 'en') {
+  global $language;
+  $var = FALSE;
+  if (!empty($node->{$field}[$lang])) {
+    $var = $node->{$field}[$lang];
+  }
+  elseif (!empty($node->{$field}[$language->language])) {
+    $var = $node->{$field}[$language->language];
+  }
+  elseif (!empty($node->{$field}['und'])) {
+    $var = $node->{$field}['und'];
+  }
+  elseif (!empty($node->{$field})) {
+    $var = $node->{$field};
+  }
+  return $var;
+}
+
+function _jango_cms_cart_count() {
+  if(!module_exists('commerce_cart')) {
+    return 0;
+  }
+  global $user;
+  $quantity = 0;
+  $order = commerce_cart_order_load($user->uid);
+  if ($order) {
+    $wrapper = entity_metadata_wrapper('commerce_order', $order);
+    $line_items = $wrapper->commerce_line_items;
+    $quantity = commerce_line_items_quantity($line_items, commerce_product_line_item_types());
+  }
+  return $quantity;
+}
+
+function _jango_cms_cart_total() {
+  if(!module_exists('commerce_cart')) {
+    return '';
+  }
+  global $user;
+  $order = commerce_cart_order_load($user->uid);
+
+  if ($order) {
+    $wrapper = entity_metadata_wrapper('commerce_order', $order);
+    $line_items = $wrapper->commerce_line_items;
+    $total = commerce_line_items_total($line_items);
+    return commerce_currency_format($total['amount'], $total['amount']['currency_code'], $wrapper);
+  }
+}
+
+/**
+ * Implements hook_menu().
+ */
+function jango_cms_init() {
+  if (in_array($_GET['q'], array(
+      'cart',
+      'checkout'
+    )) && (strpos($_SERVER['HTTP_HOST'], 'nikadevs') !== FALSE || $_SERVER['HTTP_HOST'] == 'development') && !_jango_cms_cart_count()
+  ) {
+    global $user;
+    drupal_set_message('DEMO ONLY: Product added to your cart');
+    if ($product = commerce_product_load(12)) {
+      $line_item = commerce_product_line_item_new($product, 1);
+      drupal_alter('commerce_product_calculate_sell_price_line_item', $line_item);
+      rules_invoke_event('commerce_product_calculate_sell_price', $line_item);
+      $line_item = commerce_cart_product_add($user->uid, $line_item, TRUE);
+    }
+  }
+}
+
+/**
+ * Implements hook_menu().
+ */
+function jango_cms_menu() {
+  //$node = node_load(10);unset($node->nid, $node->vid, $node->created);node_save($node);
+  $items = array();
+  $items['ajax/user-register'] = array(
+    'page callback' => 'jango_cms_ajax_user_register',
+    'page arguments' => array(),
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'delivery callback' => 'ajax_deliver',
+  );
+  $items['ajax/jango/save_variable'] = array(
+    'page callback' => 'jango_cms_save_variable',
+    'access arguments' => array('use nikadevs cms'),
+    'type' => MENU_CALLBACK,
+  );
+  return $items;
+}
+
+function jango_cms_save_variable() {
+  if (isset($_POST['variable']) && isset($_POST['variable_key'])) {
+    $variable = variable_get($_POST['variable'], array());
+    // If value is not set - remove this
+    if (!isset($_POST['value']) && isset($_POST['variable_key'])) {
+      unset($variable[$_POST['variable_key']]);
+    }
+    elseif (isset($_POST['variable_key'])) {
+      $variable[$_POST['variable_key']] = $_POST['value'];
+    }
+    else {
+      $variable = $_POST['value'];
+    }
+    variable_set($_POST['variable'], $variable);
+  }
+  drupal_exit();
+}
+
+function jango_cms_ajax_user_register() {
+  $result = array('#type' => 'ajax');
+  $form = drupal_get_form('user_register_form');
+  $form = drupal_render($form);
+  $result['#commands'][] = ajax_command_insert('.c-form-register', $form);
+  return $result;
+}
+
+/**
+ * Implements hook_user_login().
+ */
+function jango_cms_user_login(&$edit, $account) {
+  $edit['redirect'] = '<front>';
+}
+
+function jango_cms_menu_edit_item_validate($form, &$form_state) {
+  $values = $form_state['values'];
+  if (strpos($values['link_path'], '#') === 0) {
+    $values['link_path'] = str_replace('#', 'http://_anchor_', $values['link_path']);
+    form_set_value(array('#parents' => array('link_path')), $values['link_path'], $form_state);
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function jango_cms_form_alter(&$form, &$form_state, $form_id) {
+  if (strpos($form_id, 'commerce_cart_add_to_cart_form') !== FALSE) {
+
+    foreach (element_children($form['line_item_fields']) as $key) {
+      $lang = $form['line_item_fields'][$key]['#language'];
+      if (isset($form['line_item_fields'][$key][$lang]['#type']) && $form['line_item_fields'][$key][$lang]['#type'] == 'select') {
+        $form['line_item_fields'][$key][$lang]['#template_function'] = 'jango_select_attribute';
+        $form['line_item_fields'][$key][$lang]['#title_display'] = 'none';
+      }
+    }
+
+    if (isset($form['quantity']) && $form['quantity']['#type'] != 'hidden') {
+      $form['quantity']['#prefix'] = '<div class = "row c-margin-t-20"><div class="col-sm-4 col-xs-12">';
+      $form['quantity']['#suffix'] = '</div>';
+
+      $form['submit']['#prefix'] = '<div class="col-sm-12 col-xs-12 c-margin-t-20">';
+      $form['submit']['#suffix'] = '</div></div>';
+
+      $form['quantity']['#template_function'] = 'jango_textfield_qty';
+      $form['quantity']['#title'] = t('QTY');
+      $form['quantity']['#title_display'] = 'inline';
+    }
+  }
+
+  switch ($form_id) {
+    case 'search_block_form':
+      $form['search_block_form']['#prefix'] = '<div class = "input-group">';
+      $form['actions']['submit']['#suffix'] = '</div>';
+      $form['actions']['submit']['#value'] = t('Go!');
+      $form['search_block_form']['#attributes']['class'][] = 'input-default';
+      break;
+    case 'menu_edit_item':
+      if (isset($form['link_path']['#default_value'])) {
+        $form['link_path']['#default_value'] = str_replace('http://_anchor_', '#', $form['link_path']['#default_value']);
+        array_unshift($form['#validate'], 'jango_cms_menu_edit_item_validate');
+      }
+      break;
+    case 'user_login':
+      unset($form['name']['#description'], $form['pass']['#description']);
+      $form['name']['#nd_icon'] = 'glyphicon glyphicon-user';
+      $form['pass']['#nd_icon'] = 'glyphicon glyphicon-lock';
+      //$form['#attributes']['class'][] = 'mb-60 mt-60'; 
+      $form['#theme_wrappers'][] = 'jango_cms_user_login';
+      hide($form['hybridauth']);
+      break;
+  }
+}
+
+/**
+ * Implements hook_theme().
+ */
+function jango_cms_theme() {
+  $theme = array(
+    'jango_cms_user_login' => array(
+      'template' => 'jango-cms-user-login',
+      'render element'  => 'form',
+      'preprocess function' => 'jango_cms_user_login'
+    ),
+  );
+  return $theme;
+}
+
+
+/**
+ * Implements hook_theme_registry_alter().
+ */
+function jango_cms_theme_registry_alter(&$theme_registry) {
+  $theme_registry['nikadevs_cms_block_settings']['path'] = drupal_get_path('theme', 'jango') . '/templates';
+  unset($theme_registry['commerce_cart_empty_page']['function']);
+  $theme = file_exists(drupal_get_path('theme', 'jango_sub') . '/templates/jango_cms_commerce_cart_empty_page.tpl.php') ? 'jango_sub' : 'jango';
+  $theme_registry['commerce_cart_empty_page']['path'] = drupal_get_path('theme', $theme) . '/templates';
+  $theme_registry['commerce_cart_empty_page']['template'] = 'jango_cms_commerce_cart_empty_page';
+}
+
+/**
+ * Implements hook_preprocess_block().
+ */
+function jango_cms_preprocess_block(&$variables) {
+  $settings = variable_get('nikadevs_cms_block_settings_' . variable_get('theme_default', 'none'), array());
+
+  $variables['title_tag'] = 'h4';
+  $variables['title_type'] = 'widget-default';
+  $variables['title_padding_bottom'] = '';
+  $variables['padding_bottom'] = '';
+  $id = $variables['block']->module . '_' . $variables['block']->delta;
+  if (isset($settings[$id])) {
+    if (isset($settings[$id]['animation_delay']) && !empty($settings[$id]['animation_delay'])) {
+      $variables['attributes_array']['data-wow-duration'] = $settings[$id]['animation'];
+    }
+    if (isset($settings[$id]['animation']) && !empty($settings[$id]['animation'])) {
+      $variables['attributes_array']['class'] = 'wow ' . $settings[$id]['animation'];
+      unset($variables['attributes_array']['data-animation'], $variables['attributes_array']['data-animation-delay']);
+    }
+    if (isset($settings[$id]['padding_bottom']) && $settings[$id]['padding_bottom']) {
+      $variables['classes_array'][] = $settings[$id]['padding_bottom'];
+    }
+    $variables['title_tag'] = isset($settings[$id]['title_tag']) ? $settings[$id]['title_tag'] : $variables['title_tag'];
+    $variables['title_type'] = isset($settings[$id]['title_type']) && $settings[$id]['title_type'] ? $settings[$id]['title_type'] : $variables['title_type'];
+    $variables['padding_bottom'] = isset($settings[$id]['padding_bottom']) && $settings[$id]['padding_bottom'] ? $settings[$id]['padding_bottom'] : $variables['padding_bottom'];
+    $variables['title_padding_bottom'] = isset($settings[$id]['title_padding_bottom']) && $settings[$id]['title_padding_bottom'] ? $settings[$id]['title_padding_bottom'] : $variables['title_padding_bottom'];
+  }
+}
+
+/**
+ * Implements hook_field_formatter_info().
+ */
+function jango_cms_field_formatter_info() {
+  return array(
+    'jango_cms_images_main_small' => array(
+      'label' => t('Jango: Images One Main'),
+      'field types' => array('image'),
+      'settings' => array(
+        'image_style_name' => '',
+        'image_style_name_small' => '',
+        'col' => 3,
+        'zoom' => TRUE
+      ),
+    ),
+    'jango_cms_image_hover' => array(
+      'label' => t('Jango: Image hover'),
+      'field types' => array('image'),
+      'settings' => array(
+        'image_style_name' => '',
+        'hover_text' => t('Explore'),
+      ),
+    ),
+    'jango_cms_image_hover_2' => array(
+      'label' => t('Jango: Image hover 2 Icons'),
+      'field types' => array('image'),
+      'settings' => array(
+        'image_style_name' => '',
+      ),
+    ),
+    'jango_cms_images_blog_grid' => array(
+      'label' => t('Jango: Blog Grid'),
+      'field types' => array('image'),
+      'settings' => array(
+        'image_style_name' => '',
+      ),
+    ),
+    'jango_cms_images_slider_big' => array(
+      'label' => t('Jango: Images Slider'),
+      'field types' => array('image'),
+      'settings' => array(
+        'image_style_slide' => '',
+        'height' => '360'
+      ),
+    ),
+    'jango_cms_project_images_slider' => array(
+      'label' => t('Jango: Project Images Slider'),
+      'field types' => array('image'),
+      'settings' => array(
+        'image_style_name' => '',
+      ),
+    ),
+    'jango_cms_images_video_vimeo' => array(
+      'label' => t('Jango: Vimeo Video'),
+      'field types' => array('text'),
+    ),
+    'jango_cms_tags_category_blog' => array(
+      'label' => t('Jango: Blog Tags'),
+      'field types' => array('taxonomy_term_reference'),
+    ),
+    'jango_cms_images_team' => array(
+      'label' => t('Jango: Team'),
+      'field types' => array('image'),
+      'settings' => array(
+        'image_style_name' => '',
+      ),
+    ),
+    'jango_cms_social_links' => array(
+      'label' => t('Jango: Social Links'),
+      'field types' => array('link_field'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_settings_form().
+ */
+function jango_cms_field_formatter_settings_form($field, $instance, $view_mode, $form, &$form_state) {
+  //This gets the view_mode where our settings are stored
+  $display = $instance['display'][$view_mode];
+  //This gets the actual settings
+  $settings = $display['settings'];
+  switch ($display['type']) {
+    case 'jango_cms_images_main_small':
+      $element = array();
+      $image_styles = array();
+      foreach (image_styles() as $name => $image_style) {
+        $image_styles[$name] = $image_style['label'];
+      }
+      $element['image_style_name'] = array(
+        '#type' => 'select',
+        '#title' => t('Image Style for Main Image'),
+        '#default_value' => $settings['image_style_name'],
+        '#options' => $image_styles
+      );
+      $element['image_style_name_small'] = array(
+        '#type' => 'select',
+        '#title' => t('Image Style for Small Images'),
+        '#default_value' => $settings['image_style_name_small'],
+        '#options' => $image_styles
+      );
+      $cols = array(2, 3, 4, 6);
+      $element['col'] = array(
+        '#type' => 'select',
+        '#options' => array_combine($cols, $cols),
+        '#title' => t('Columns Count for Small Images'),
+        '#default_value' => $settings['col'] ? $settings['col'] : 3,
+      );
+      break;
+    case 'jango_cms_image_hover':
+      $element = array();
+      $image_styles = array();
+      foreach (image_styles() as $name => $image_style) {
+        $image_styles[$name] = $image_style['label'];
+      }
+      $element['image_style_name'] = array(
+        '#type' => 'select',
+        '#title' => t('Image Style for Main Image'),
+        '#default_value' => $settings['image_style_name'],
+        '#options' => $image_styles
+      );
+      $element['hover_text'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Hover Text'),
+        '#default_value' => $settings['hover_text'],
+      );
+      break;
+    case 'jango_cms_image_hover_2':
+      $element = array();
+      $image_styles = array();
+      foreach (image_styles() as $name => $image_style) {
+        $image_styles[$name] = $image_style['label'];
+      }
+      $element['image_style_name'] = array(
+        '#type' => 'select',
+        '#title' => t('Image Style for Main Image'),
+        '#default_value' => $settings['image_style_name'],
+        '#options' => $image_styles
+      );
+      break;
+    case 'jango_cms_images_slider_big':
+      $element = array();
+      $image_styles = array();
+      foreach (image_styles() as $name => $image_style) {
+        $image_styles[$name] = $image_style['label'];
+      }
+      $element['image_style_slide'] = array(
+        '#type' => 'select',
+        '#title' => t('Image Style for Slider'),
+        '#default_value' => $settings['image_style_slide'],
+        '#options' => $image_styles
+      );
+      $element['height'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Height (px)'),
+        '#default_value' => $settings['height'],
+      );
+      break;
+    case 'jango_cms_project_images_slider':
+      $element = array();
+      $image_styles = array();
+      foreach (image_styles() as $name => $image_style) {
+        $image_styles[$name] = $image_style['label'];
+      }
+      $element['image_style_name'] = array(
+        '#type' => 'select',
+        '#title' => t('Image Style for Main Image'),
+        '#default_value' => $settings['image_style_name'],
+        '#options' => $image_styles
+      );
+      break;
+  }
+  return $element;
+}
+
+/**
+ * Implements hook_field_formatter_settings_summary().
+ */
+function jango_cms_field_formatter_settings_summary($field, $instance, $view_mode) {
+  $display = $instance['display'][$view_mode];
+  switch ($display['type']) {
+    case 'jango_cms_images_main_small':
+      $settings = $display['settings'];
+      $image_styles = image_styles();
+      $style_name = isset($image_styles[$settings['image_style_name']]['label']) ? $image_styles[$settings['image_style_name']]['label'] : 'Original';
+      $summary = t('Image size @style', array(
+        '@style' => $style_name
+      ));
+      return $summary;
+    case 'jango_cms_image_hover':
+      $settings = $display['settings'];
+      $image_styles = image_styles();
+      $style_name = isset($image_styles[$settings['image_style_name']]['label']) ? $image_styles[$settings['image_style_name']]['label'] : 'Original';
+      $summary = t('Image size @style and hover text @text', array(
+        '@style' => $style_name,
+        '@text' => $settings['hover_text']
+      ));
+      return $summary;
+    case 'jango_cms_image_hover_2':
+      $settings = $display['settings'];
+      $image_styles = image_styles();
+      $style_name = isset($image_styles[$settings['image_style_name']]['label']) ? $image_styles[$settings['image_style_name']]['label'] : 'Original';
+      $summary = t('Image size @style', array(
+        '@style' => $style_name,
+      ));
+      return $summary;
+    case 'jango_cms_images_slider_big':
+      $settings = $display['settings'];
+      $image_styles = image_styles();
+      $style_name = isset($image_styles[$settings['image_style_slide']]['label']) ? $image_styles[$settings['image_style_slide']]['label'] : 'Original';
+      $summary = t('Image size @style', array(
+        '@style' => $style_name
+      ));
+      return $summary;
+    case 'jango_cms_project_images_slider':
+      $settings = $display['settings'];
+      $image_styles = image_styles();
+      $style_name = isset($image_styles[$settings['image_style_name']]['label']) ? $image_styles[$settings['image_style_name']]['label'] : 'Original';
+      $summary = t('Image size @style', array(
+        '@style' => $style_name,
+      ));
+      return $summary;
+  }
+}
+
+/**
+ * Implements hook_field_formatter_view().
+ */
+function jango_cms_field_formatter_view($entity_type, $entity, $field, $instance, $langcode, $items, $display) {
+  if (!count($items)) {
+    return;
+  }
+  switch ($display['type']) {
+    case 'jango_cms_images_main_small':
+      $element = array();
+      $settings = $display['settings'];
+
+      $output = '<div class="c-shop-product-details-2">
+                    <div class="c-product-gallery">
+                      <div class="c-product-gallery-content">';
+      foreach ($items as $delta => $image) {
+        $output .= '<div class="c-zoom">';
+        $output .= theme('image_style', array(
+          'style_name' => $settings['image_style_name'],
+          'path' => $image['uri'],
+          'path' => $image['uri'],
+          'title' => $image['title'],
+          'alt' => $image['alt']
+        ));
+        $output .= '</div>';
+      }
+      $output .= '</div>';
+
+      $output .= '<div class="row c-product-gallery-thumbnail">';
+      foreach ($items as $delta => $image) {
+        $output .= '<div class="col-xs-' . $settings['col'] . ' c-product-thumb">';
+        $image = theme('image_style', array(
+          'style_name' => $settings['image_style_name_small'],
+          'path' => $image['uri'],
+          'path' => $image['uri'],
+          'title' => $image['title'],
+          'alt' => $image['alt']
+        ));
+        $output .= $image;
+        $output .= '</div>';
+      }
+      $output .= '    </div>';
+      $output .= '  </div>';
+      $output .= '</div>';
+
+      $element[0]['#markup'] = $output;
+      return $element;
+
+    case 'jango_cms_images_blog_grid':
+      $element = array();
+      $image = array_shift($items);
+
+      $image2 = image_load($image['uri']);
+      image_resize($image2, '400px', '300px');
+      image_save($image2);
+
+      $output = ' <div class="c-media c-content-overlay">
+                <div class="c-overlay-wrapper">
+                  <div class="c-overlay-content">
+                   <a href="' . url('node/' . $entity->nid) . '">
+                     <i class="icon-link"></i>
+                   </a>
+                   <a href="' . file_create_url($image['uri']) . '" data-lightbox="fancybox" data-fancybox-group="gallery">
+                    <i class="icon-magnifier"></i>
+                   </a>
+                  </div>
+                </div>
+   <img class="c-overlay-object img-responsive" src="' . file_create_url($image['uri']) . '" alt=""> </div> ';
+
+      $element[0]['#markup'] = $output;
+
+      return $element;
+    case 'jango_cms_image_hover':
+      $element = array();
+      $settings = $display['settings'];
+      foreach ($items as $delta => $image) {
+        $output = '<div class="c-content-overlay">
+          <div class="c-overlay-wrapper">
+              <div class="c-overlay-content">
+                  <a href="' . url('node/' . $entity->nid) . '" class="btn btn-md c-btn-grey-1 c-btn-uppercase c-btn-bold c-btn-border-1x c-btn-square">' . t($settings['hover_text']) . ' </a>
+              </div>
+          </div>
+          <div class="c-bg-img-top-center c-overlay-object" data-height="height">
+            ' . theme('image_style', array(
+            'style_name' => $settings['image_style_name'],
+            'path' => $image['uri'],
+            'title' => $image['title'],
+            'alt' => $image['alt'],
+            'attributes' => array('class' => array('img-responsive'))
+          )) . '
+          </div>
+        </div>';
+      }
+
+      $element[0]['#markup'] = $output;
+      return $element;
+    case 'jango_cms_image_hover_2':
+      $element = array();
+      $settings = $display['settings'];
+      foreach ($items as $delta => $image) {
+        $output = '<div class="c-media c-content-overlay">
+          <div class="c-overlay-wrapper">
+              <div class="c-overlay-content">
+                  <a href="' . url('node/' . $entity->nid) . '">
+                      <i class="icon-link"></i>
+                  </a>
+                  <a href="' . file_create_url($image['uri']) . '" data-lightbox="fancybox" data-fancybox-group="gallery">
+                      <i class="icon-magnifier"></i>
+                  </a>
+              </div>
+          </div>
+          ' .theme('image_style', array(
+              'style_name' => $settings['image_style_name'],
+              'path' => $image['uri'],
+              'title' => $image['title'],
+              'alt' => $image['alt'],
+              'attributes' => array('class' => array('img-responsive'))
+            )) . '
+        </div>';
+      }
+      $element[0]['#markup'] = $output;
+      return $element;
+    case 'jango_cms_images_slider_big':
+      $element = array();
+
+      $settings = $display['settings'];
+      $output = '<div class="c-media">';
+      $output .= '<div class="c-content-media-2-slider" data-slider="owl">';
+      $output .= '<div class="owl-carousel owl-theme c-theme owl-single" data-single-item="true" data-auto-play="4000">';
+      foreach ($items as $delta => $image) {
+        $output .= '<div class="item">';
+        $output .= ' <div class = "hidden">';
+        $output .= theme('image_style', array(
+          'style_name' => $settings['image_style_slide'],
+          'path' => $image['uri'],
+          'title' => $image['title'],
+          'alt' => $image['alt']
+        ));
+        $output .= '</div>';
+        $output .= '<div class="c-content-media-2" style="min-height: ' . $settings['height'] . 'px; background-image: url(' . file_create_url(image_style_path($settings['image_style_slide'], $image['uri'])) . ');">';
+        $output .= '</div>';
+        $output .= '</div>';
+      }
+      $output .= '</div>';
+      $output .= '</div>';
+      $output .= '</div>';
+      $element[0]['#markup'] = $output;
+      return $element;
+    case 'jango_cms_images_video_vimeo':
+      $element = array();
+      foreach ($items as $delta => $item) {
+        // $settings = $display['settings'];
+        $video_url = '';
+        if(strpos($item['value'], 'vimeo') !== FALSE) {
+           preg_match('|/(\d+)|', $item['value'], $matches);
+           $video_url = '//player.vimeo.com/video/' . $matches[1];
+        }
+        else if(strpos($item['value'], 'youtube') !== FALSE) {
+           if (strpos($item['value'], '?v=') !== false) {
+              $id = substr($item['value'], strpos($item['value'], '?v=') + 3);
+              $video_url = '//www.youtube.com/embed/' . $id .'?theme=dark&color=white';
+           }
+           else {
+            $video_url = $item['value'];
+          }
+        }
+
+
+        $output = '<div class="c-media">';
+        $output .= '<iframe src="' . $video_url . '" width="100%" height="381" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+      }
+      $output .= '</div>';
+      $element[0]['#markup'] = $output;
+      return $element;
+    case 'jango_cms_tags_category_blog':
+      $element = array();
+      $output = '<ul class="c-tags c-theme-ul-bg">';
+
+      foreach ($items as $delta => $tags) {
+        $term_id = taxonomy_term_load($tags['tid']);
+        $output .= isset($term_id->name) ? '<li>' . $term_id->name . '</li>' : '';
+      }
+      $output .= '</ul>';
+      $element[0]['#markup'] = $output;
+      return $element;
+    case 'jango_cms_project_images_slider':
+      $element = array();
+      $settings = $display['settings'];
+
+      $output = '<div class="cbp-slider">';
+      $output .= ' <ul class="cbp-slider-wrap">';
+      foreach ($items as $delta => $item) {
+        $output .= '<li class="cbp-slider-item">';
+        $output .= theme('image_style', array(
+          'style_name' => $settings['image_style_name'],
+          'path' => $item['uri']
+        ));
+        $output .= '</li>';
+      }
+      $output .= '</ul>';
+      $output .= '</div>';
+      $element[0]['#markup'] = $output;
+      return $element;
+    case 'jango_cms_images_team':
+      $element = array();
+      $image = array_shift($items);
+
+      $output = '<div class="c-caption c-content-overlay">
+                   <div class="c-overlay-wrapper">
+                     <div class="c-overlay-content">
+                       <a href="' . url('node/' . $entity->nid) . '">
+                         <i class="icon-link"></i>
+                       </a>
+                       <a href="' . file_create_url($image['uri']) . '" data-lightbox="fancybox" data-fancybox-group="gallery-2">
+                         <i class="icon-magnifier"></i>
+                       </a>
+                     </div>
+                   </div>
+                   <img src="' . file_create_url($image['uri']) . '" class="img-responsive c-overlay-object" alt=""> 
+                 </div>';
+
+      $element[0]['#markup'] = $output;
+
+      return $element;
+    case 'jango_cms_social_links':
+      $element = array();
+
+      $output = '<ul class="c-socials c-theme-ul">';
+      for ($i = 0; $i < count($items); $i++) {
+        $output .= '<li>
+                      <a target="_blank" href="' . $items[$i]['url'] . '">
+                        <i class="' . $items[$i]['title'] . '"></i>
+                      </a>
+                     </li>';
+      }
+      $output .= '</ul>';
+
+      $element[0]['#markup'] = $output;
+
+      return $element;
+  }
+}
+
+/**
+ * Implements hook_entity_info_alter().
+ */
+function jango_cms_entity_info_alter(&$entity_info) {
+  $entity_info['node']['view modes']['teaser_list'] = array(
+    'label' => t('Teaser List'),
+    'custom settings' => TRUE,
+  );
+}
+
+/**
+ * Implements hook_preprocess_node().
+ */
+function jango_cms_preprocess_node(&$vars) {
+  if ($vars['view_mode'] == 'teaser_list') {
+    $vars['theme_hook_suggestions'][] = 'node__' . $vars['type'] . '__teaser_list';
+  }
+}
+
+/**
+ * Implements hook_node_view().
+ */
+function jango_cms_node_view($node, $view_mode, $langcode) {
+  global $latest_view_mode;
+  $latest_view_mode = $view_mode;
+}

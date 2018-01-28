@@ -1,0 +1,1 @@
+<?php include('views-view-fields--project--isotope-grid.tpl.php');

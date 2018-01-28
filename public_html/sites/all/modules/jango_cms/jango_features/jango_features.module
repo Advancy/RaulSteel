@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Jango Features feature.
+ */
+
+include_once 'jango_features.features.inc';

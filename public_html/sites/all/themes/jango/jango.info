@@ -1,0 +1,76 @@
+name = Jango
+description = Jango is Responsive Drupal 7 Theme.
+core = 7.x
+engine = phptemplate
+
+regions[top]                = Top
+regions[content_top]        = Content Top
+regions[content]            = Content
+regions[sidebar]            = Sidebar
+regions[bottom]             = Content Bottom
+regions[content_full]       = Content Full Width
+regions[footer]             = Footer
+
+stylesheets[all][] = assets/plugins/socicon/socicon.css
+stylesheets[all][] = assets/plugins/bootstrap-social/bootstrap-social.css
+stylesheets[all][] = assets/plugins/font-awesome/css/font-awesome.min.css
+stylesheets[all][] = assets/plugins/simple-line-icons/simple-line-icons.min.css
+stylesheets[all][] = assets/plugins/animate/animate.min.css
+stylesheets[all][] = assets/plugins/cubeportfolio/css/cubeportfolio.min.css
+stylesheets[all][] = assets/plugins/owl-carousel/assets/owl.carousel.css
+stylesheets[all][] = assets/plugins/fancybox/jquery.fancybox.css
+stylesheets[all][] = assets/plugins/slider-for-bootstrap/css/slider.css
+stylesheets[all][] = assets/plugins/ilightbox/css/ilightbox.css
+stylesheets[all][] = css/YTPlayer.css
+stylesheets[all][] = css/drupal.css
+
+scripts[] = assets/plugins/jquery-migrate.min.js
+scripts[] = assets/plugins/bootstrap/js/bootstrap.min.js
+scripts[] = assets/plugins/jquery.easing.min.js
+scripts[] = assets/plugins/reveal-animate/wow.js
+scripts[] = assets/plugins/cubeportfolio/js/jquery.cubeportfolio.min.js
+scripts[] = assets/plugins/owl-carousel/owl.carousel.js
+scripts[] = assets/plugins/counterup/jquery.waypoints.min.js
+scripts[] = assets/plugins/counterup/jquery.counterup.min.js
+scripts[] = assets/plugins/fancybox/jquery.fancybox.pack.js
+scripts[] = assets/plugins/slider-for-bootstrap/js/bootstrap-slider.js
+scripts[] = assets/plugins/zoom-master/jquery.zoom.min.js
+scripts[] = assets/plugins/isotope/isotope.pkgd.min.js
+scripts[] = assets/plugins/isotope/imagesloaded.pkgd.min.js
+scripts[] = assets/plugins/isotope/packery-mode.pkgd.min.js
+scripts[] = assets/plugins/ilightbox/js/jquery.requestAnimationFrame.js
+scripts[] = assets/plugins/ilightbox/js/jquery.mousewheel.js
+scripts[] = assets/plugins/ilightbox/js/ilightbox.packed.js
+scripts[] = assets/plugins/progress-bar/progressbar.js
+scripts[] = assets/base/js/scripts/reveal-animate/reveal-animate.js
+scripts[] = assets/base/js/app.js
+scripts[] = assets/base/js/components.js
+scripts[] = assets/base/js/components-shop.js
+scripts[] = assets/plugins/gmaps/gmaps.js
+scripts[] = assets/plugins/gmaps/api.js
+scripts[] = js/jquery.mb.YTPlayer.js
+scripts[] = js/drupal.js
+
+features[] = name
+features[] = logo
+features[] = slogan
+features[] = node_user_picture
+features[] = comment_user_picture
+features[] = comment_user_verification
+features[] = favicon
+features[] = main_menu
+
+settings[toggle_name] = 1
+settings[toggle_logo] = 1
+settings[toggle_slogan] = 1
+settings[toggle_node_user_picture] = 1
+settings[toggle_comment_user_picture] = 1
+settings[toggle_comment_user_verification] = 1
+settings[toggle_favicon] = 1
+settings[toggle_main_menu] = 1
+
+settings[loader_image] = 1
+
+version = "7.x-1.4"
+core = "7.x"
+project = "Jango"

@@ -1,0 +1,14 @@
+<?php
+
+function jango_cms_install() {
+  include DRUPAL_ROOT . '/' . drupal_get_path('module', 'jango_cms') . '/jango_layoutbuilder_import/jango_cms_layout_builder_settings.php';
+  variable_set('nikadevs_cms_layout_jango', $layouts);
+  variable_set('nikadevs_cms_layout_jango_sub', $layouts);
+
+  drupal_set_message('Layouts for Builder imported.');
+}
+
+function jango_cms_uninstall() {
+  variable_del('nikadevs_cms_layout_jango');
+  variable_del('nikadevs_cms_layout_jango_sub');
+}
