@@ -122,11 +122,11 @@
                     <?php global $user;
                     if($user->uid): ?>
                       <a href="<?php print url('user'); ?>" class="c-btn-border-opacity-04 c-btn btn-no-focus c-btn-header btn btn-sm c-btn-border-1x c-btn-dark c-btn-circle c-btn-uppercase c-btn-sbold">
-                        <i class="icon-user"></i> <?php print t('Account'); ?>
+                        <i class="icon-user"></i> <?php print t('Konto'); ?>
                       </a>
                     <?php else: ?>
                       <a href="<?php print url('user'); ?>" class="c-btn-border-opacity-04 c-btn btn-no-focus c-btn-header btn btn-sm c-btn-border-1x c-btn-dark c-btn-circle c-btn-uppercase c-btn-sbold">
-                        <i class="icon-user"></i> <?php print t('Sign In'); ?>
+                        <i class="icon-user"></i> <?php print t('Zaloguj'); ?>
                       </a>
                     <?php endif; ?>
                   </li>
