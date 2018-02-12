@@ -67,7 +67,7 @@
   <?php print $scripts; ?>
 
   <div class="c-layout-go2top" style="display: block;">
-    <i class="icon-arrow-up"></i>
+    <i class="glyphicon glyphicon-arrow-up"></i>
   </div>
 
   <?php if(strpos($_SERVER['HTTP_HOST'], 'nikadevs') !== FALSE || $_SERVER['HTTP_HOST'] == 'development'): ?>
