@@ -1578,3 +1578,11 @@ function jango_preprocess_jango_cms_user_login(&$variables) {
   $reg_form = variable_get('user_register') ? drupal_get_form('user_register_form') : array();
   $variables['register_form'] = !empty($reg_form) ? render($reg_form) : '';
 }
+
+function jango_preprocess_page(&$vars, $hook) {
+  if (isset($vars['node']->type)) {
+  // If the content type's machine name is "my_machine_name" the file
+  // name will be "page--my-machine-name.tpl.php".
+  $vars['theme_hook_suggestions'][] = 'page__' . $vars['node']->type;
+  }
+  }
