@@ -13,7 +13,7 @@ $columns = isset($view->style_plugin->options['columns']) ? $view->style_plugin-
 global $counter_delay;
 $counter_delay = 0;
 ?>
-<div class="c-content-isotope-gallery c-opt-1 cols-<?php print $columns; ?>">
+<div class="c-content-isotope-gallery c-opt-2 cols-<?php print $columns; ?>">
   <?php foreach ($rows as $row_number => $columns): ?>
     <?php foreach ($columns as $column_number => $item): ?>
       <?php print $item; ?>
