@@ -1055,3 +1055,8 @@ li.col-md- ul a{
     height: 60px;
     color: #32c5d2;
 }
+
+.translation_en.first.last {
+  display: none !important; 
+}
+
