@@ -194,6 +194,7 @@ function ctools_block_content_type_render($subtype, $conf) {
  */
 function ctools_block_content_type_edit_form($form, &$form_state) {
   // Does nothing!
+
   return $form;
 }
 
