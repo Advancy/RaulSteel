@@ -87,7 +87,7 @@ if ($teaser) { ?>
             <?php print render($content['field_new_label']); ?>
             <div class="c-overlay-wrapper">
                 <div class="c-overlay-content">
-                    <a href="<?php print $node_url; ?>" class="btn btn-md c-btn-grey-1 c-btn-uppercase c-btn-bold c-btn-border-1x c-btn-square"><?php print t('Explore'); ?></a>
+                    <a href="<?php print $node_url; ?>" class="btn btn-md c-btn-grey-1 c-btn-uppercase c-btn-bold c-btn-border-1x c-btn-square"><?php print t('Zobacz'); ?></a>
                 </div>
             </div>
             <div class = "hidden"><?php print render($content['product:field_images']); ?></div>
