@@ -3,6 +3,9 @@ THEME COLOR - DEFAULT
 *********************/
 a {
   color: #3f444a; }
+a.cookies_popup_hyperlink {
+  color: #d0d866 !important;
+}  
   a:active,
   a:hover,
   a:focus {
