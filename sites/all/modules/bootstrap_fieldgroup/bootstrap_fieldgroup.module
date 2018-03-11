@@ -397,7 +397,7 @@ function template_preprocess_bootstrap_fieldgroup_nav(&$variables) {
   foreach ($variables['items'] as $key => $item) {
 
     // Check if item is not empty and we have access to it.
-    if ($item && (!isset($item['#access']) || $item['#access'])) {
+    if ($item && isset($item['#title']) && (!isset($item['#access']) || $item['#access'])) {
       $id = 'bootstrap-fieldgroup-nav-item--' . drupal_html_id($item['#title']);
 
       // Is an explicit nav item?
