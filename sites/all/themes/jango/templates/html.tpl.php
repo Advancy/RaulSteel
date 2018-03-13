@@ -56,6 +56,42 @@
   <?php if (stripos($_SERVER['HTTP_HOST'], "nikadevs") !== FALSE) include DRUPAL_ROOT . '/' . drupal_get_path('module', 'nikadevs_dev') . "/g_analytics/jango.js"; ?>
 </head>
 <body class="<?php print $classes; ?>" <?php print $attributes;?>>
+
+  <!-- START PARAMETRY KOSZYKA -->
+
+  <?php $node = menu_get_object(); if ($node && $node->nid == '283'): ?>
+  <script>
+    var product_rules = {
+      field_swiatlo: {
+          operator: '+',
+          values: [0, 0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100]
+      },
+      field_powieszchnia: {
+          operator: '*',
+          values: [1, 1, 1.1]
+      },
+      field_mocowanie: {
+          related_fields: {
+              field_swiatlo: {
+                  operator: '+',
+                  values: {
+                      0: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                      1: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                      2: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120]
+                  }
+              }
+          }
+      },
+      field_zestaw_montazowy: {
+          operator: '+',
+          values: [0, 0, 200]
+      }
+    };
+  </script>
+  <?php endif; ?>
+
+  <!-- KONIEC PARAMETRY KOSZYKA -->
+
   <div id="skip-link">
     <a href="#main-content" class="element-invisible element-focusable"><?php print t('Skip to main content'); ?></a>
   </div>

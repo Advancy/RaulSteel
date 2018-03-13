@@ -43,6 +43,7 @@ scripts[] = assets/plugins/ilightbox/js/jquery.mousewheel.js
 scripts[] = assets/plugins/ilightbox/js/ilightbox.packed.js
 scripts[] = assets/plugins/progress-bar/progressbar.js
 scripts[] = assets/base/js/scripts/reveal-animate/reveal-animate.js
+scripts[] = assets/base/js/scripts/calculator/calculator.js
 scripts[] = assets/base/js/app.js
 scripts[] = assets/base/js/components.js
 scripts[] = assets/base/js/components-shop.js
