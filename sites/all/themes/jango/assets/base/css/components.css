@@ -5967,7 +5967,10 @@ h1 {
   padding: 30px 0; }
 
 .c-content-box.c-size-md {
-  padding: 60px 0; }
+  padding-top: 0px;
+  padding-right: 0px;
+  padding-bottom: 60px;
+  padding-left: 0px; }
 
 .c-content-box.c-size-lg {
   padding: 80px 0; }
