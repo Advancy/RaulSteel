@@ -363,7 +363,7 @@ function jango_select_attribute(&$variables) {
 
   $output = '';
 //  if($element['#title_display'] != 'none') {
-  $output .= '<p class="c-product-meta-label c-product-margin-1 c-font-uppercase c-font-bold">' . t($element['#title']) . ':</p>';
+  $output .= '<p title="'. t($element['#description']) . '"class="c-product-meta-label c-product-margin-1 c-font-uppercase c-font-bold">' . t($element['#title']) . ':</p>';
   $variables['element']['#title_display'] = 'none';
 //  }
   _form_set_class($element, array('form-select'));
