@@ -22,7 +22,7 @@
 
 <?php
 $adres=$_SERVER['REQUEST_URI'];
-$jezyk=substr($adres,0,3);
+$language=substr($adres,0,3);
 ?>
 
 <div class="c-cart-menu">
@@ -30,7 +30,7 @@ $jezyk=substr($adres,0,3);
   <div class="c-cart-menu-title">
       <p class="c-cart-menu-float-l c-font-sbold">
       <?php 
-      if ($jezyk== '/pl')
+      if ($language== '/pl')
       print t('@count pozycja/pozycji', array('@count' => count($view->result))); 
       else
       print t('@count item(s)', array('@count' => count($view->result))); 
@@ -50,7 +50,7 @@ $jezyk=substr($adres,0,3);
   <div class="c-cart-menu-footer">
     <a href="<?php print url('cart'); ?>" class="btn btn-md c-btn c-btn-square c-btn-grey-3 c-font-white c-font-bold c-center c-font-uppercase">
     <?php 
-    if ($jezyk== '/pl')
+    if ($language== '/pl')
     print t('Zobacz Koszyk');
     else
     print t('View Cart'); 
@@ -58,7 +58,7 @@ $jezyk=substr($adres,0,3);
     </a>
     <a href="<?php print url('cart/checkout'); ?>" class="btn btn-md c-btn c-btn-square c-theme-btn c-font-white c-font-bold c-center c-font-uppercase">
     <?php 
-    if ($jezyk== '/pl')
+    if ($language== '/pl')
     print t('Zapłać');
     else 
     print t('Checkout'); 
