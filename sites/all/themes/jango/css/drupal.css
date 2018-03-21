@@ -380,7 +380,7 @@ img {
     background: #fff;
   }
   .c-layout-header .c-navbar .c-logo img{
-    max-height: 45px;
+    max-height: 100px;
   }
   .c-page-on-scroll.c-layout-header-fixed .c-layout-header .c-brand .c-desktop-logo-inverse {
       display: inline-block;
