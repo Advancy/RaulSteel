@@ -19,10 +19,22 @@
  * @ingroup views_templates
  */
 ?>
+
+<?php
+$adres=$_SERVER['REQUEST_URI'];
+$jezyk=substr($adres,0,3);
+?>
+
 <div class="c-cart-menu">
 
   <div class="c-cart-menu-title">
-      <p class="c-cart-menu-float-l c-font-sbold"><?php print t('@count item(s)', array('@count' => count($view->result))); ?></p>
+      <p class="c-cart-menu-float-l c-font-sbold">
+      <?php 
+      if ($jezyk== '/pl')
+      print t('@count pozycja/pozycji', array('@count' => count($view->result))); 
+      else
+      print t('@count item(s)', array('@count' => count($view->result))); 
+      ?></p>
       <p class="c-cart-menu-float-r c-theme-font c-font-sbold"><?php print _jango_cms_cart_total(); ?></p>
   </div>
   <ul class="c-cart-menu-items">
@@ -36,8 +48,22 @@
   </ul>
 
   <div class="c-cart-menu-footer">
-    <a href="<?php print url('cart'); ?>" class="btn btn-md c-btn c-btn-square c-btn-grey-3 c-font-white c-font-bold c-center c-font-uppercase"><?php print t('View Cart'); ?></a>
-    <a href="<?php print url('cart/checkout'); ?>" class="btn btn-md c-btn c-btn-square c-theme-btn c-font-white c-font-bold c-center c-font-uppercase"><?php print t('Checkout'); ?></a>
+    <a href="<?php print url('cart'); ?>" class="btn btn-md c-btn c-btn-square c-btn-grey-3 c-font-white c-font-bold c-center c-font-uppercase">
+    <?php 
+    if ($jezyk== '/pl')
+    print t('Zobacz Koszyk');
+    else
+    print t('View Cart'); 
+    ?>
+    </a>
+    <a href="<?php print url('cart/checkout'); ?>" class="btn btn-md c-btn c-btn-square c-theme-btn c-font-white c-font-bold c-center c-font-uppercase">
+    <?php 
+    if ($jezyk== '/pl')
+    print t('Zapłać');
+    else 
+    print t('Checkout'); 
+    ?>
+    </a>
   </div>
 
 </div>
