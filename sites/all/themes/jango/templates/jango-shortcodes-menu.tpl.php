@@ -1,5 +1,10 @@
 <header class="c-layout-header <?php print $class; ?>" data-minimize-offset="80">
 
+<?php
+$adres=$_SERVER['REQUEST_URI'];
+$jezyk=substr($adres,0,3);
+?>
+
 <?php if($header_top): ?>
   <div class="c-topbar c-topbar-<?php print $header_top_class; ?>">
     <div class="container<?php print $width; ?>">
@@ -122,11 +127,17 @@
                     <?php global $user;
                     if($user->uid): ?>
                       <a href="<?php print url('user'); ?>" class="c-btn-border-opacity-04 c-btn btn-no-focus c-btn-header btn btn-sm c-btn-border-1x c-btn-dark c-btn-circle c-btn-uppercase c-btn-sbold">
-                        <i class="icon-user"></i> <?php print t('Konto'); ?>
+                        <i class="icon-user"></i> <?php if ($jezyk== '/pl')
+                          print t('Konto');
+                          else
+                          print t('Account');  ?>
                       </a>
                     <?php else: ?>
                       <a href="<?php print url('user'); ?>" class="c-btn-border-opacity-04 c-btn btn-no-focus c-btn-header btn btn-sm c-btn-border-1x c-btn-dark c-btn-circle c-btn-uppercase c-btn-sbold">
-                        <i class="icon-user"></i> <?php print t('Zaloguj'); ?>
+                        <i class="icon-user"></i> <?php if ($jezyk== '/pl')
+                          print t('Zaloguj');
+                          else
+                          print t('Log in'); ?>
                       </a>
                     <?php endif; ?>
                   </li>
