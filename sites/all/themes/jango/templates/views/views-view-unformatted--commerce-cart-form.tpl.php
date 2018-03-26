@@ -19,6 +19,12 @@
  * @ingroup views_templates
  */
 ?>
+
+<?php
+$adres=$_SERVER['REQUEST_URI'];
+$language=substr($adres,0,3);
+?>
+
 <div class="c-shop-cart-page-1">
 
   <div class="row c-cart-table-title">
@@ -35,7 +41,14 @@
         <h3 class="c-font-uppercase c-font-bold c-font-16 c-font-grey-2"><?php print t('Qty'); ?></h3>
     </div>
     <div class="col-md-2 c-cart-price">
-        <h3 class="c-font-uppercase c-font-bold c-font-16 c-font-grey-2"><?php print t('Unit Price'); ?></h3>
+        <h3 class="c-font-uppercase c-font-bold c-font-16 c-font-grey-2">
+            <?php 
+                if ($language== '/pl')
+                    print t('Cena za sztukę');
+                else
+                    print t('Unit Price');  
+            ?>
+        </h3>
     </div>
     <div class="col-md-1 c-cart-total">
         <h3 class="c-font-uppercase c-font-bold c-font-16 c-font-grey-2"><?php print t('Total'); ?></h3>
