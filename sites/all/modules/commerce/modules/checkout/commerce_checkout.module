@@ -10,6 +10,7 @@
 /**
  * Implements hook_menu().
  */
+
 function commerce_checkout_menu() {
   $items = array();
 
@@ -246,11 +247,27 @@ function commerce_checkout_forms($form_id, $args) {
  * Implements hook_form_alter().
  */
 function commerce_checkout_form_alter(&$form, &$form_state, $form_id) {
+  $adres=$_SERVER['REQUEST_URI'];
+  $language=substr($adres,0,3);
   if (strpos($form_id, 'views_form_commerce_cart_form_') === 0) {
     // Only add the Checkout button if the cart form View shows line items.
     $view = reset($form_state['build_info']['args']);
 
-    if (!empty($view->result)) {
+    if ($language== '/pl')
+    {
+      if (!empty($view->result)) {
+        $form['actions']['checkout'] = array(
+          '#type' => 'submit',
+          '#value' => t('Zapłać'),
+          '#weight' => 5,
+          '#access' => user_access('access checkout'),
+          '#submit' => array_merge($form['#submit'], array('commerce_checkout_line_item_views_form_submit')),
+        );
+    }
+    }
+    else
+    {
+      if (!empty($view->result)) {
       $form['actions']['checkout'] = array(
         '#type' => 'submit',
         '#value' => t('Checkout'),
@@ -258,6 +275,7 @@ function commerce_checkout_form_alter(&$form, &$form_state, $form_id) {
         '#access' => user_access('access checkout'),
         '#submit' => array_merge($form['#submit'], array('commerce_checkout_line_item_views_form_submit')),
       );
+    }
     }
   }
 }
