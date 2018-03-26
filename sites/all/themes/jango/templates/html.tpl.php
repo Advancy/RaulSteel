@@ -59,7 +59,7 @@
 
   <!-- START PARAMETRY KOSZYKA -->
 
-  <?php $node = menu_get_object(); if ($node && $node->nid == '283'): ?>
+    <?php $node = menu_get_object(); if ($node && ($node->nid == '300' || $node->nid == '301' || $node->nid == '302' || $node->nid == '303') ): ?>
   <script>
     var product_rules = {
       field_swiatlo: {

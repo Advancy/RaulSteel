@@ -1578,3 +1578,13 @@ function jango_preprocess_jango_cms_user_login(&$variables) {
   $reg_form = variable_get('user_register') ? drupal_get_form('user_register_form') : array();
   $variables['register_form'] = !empty($reg_form) ? render($reg_form) : '';
 }
+
+function jango_preprocess_node(&$variables) {
+  if ($variables['node']) {
+    $node = $variables['node'];
+    $node_type = $node->type;
+    if(preg_match("/^content_produktu__/", $node->type)) {
+      $variables['theme_hook_suggestion'] = 'node__content_produktu';
+    }
+  }
+}
