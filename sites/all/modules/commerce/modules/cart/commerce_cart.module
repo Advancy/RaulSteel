@@ -242,13 +242,19 @@ function commerce_cart_commerce_line_item_summary_link_info() {
  * Implements hook_form_alter().
  */
 function commerce_cart_form_alter(&$form, &$form_state, $form_id) {
+  $adres=$_SERVER['REQUEST_URI'];
+  $language=substr($adres,0,3);
   if (strpos($form_id, 'views_form_commerce_cart_form_') === 0) {
     // Only alter buttons if the cart form View shows line items.
     $view = reset($form_state['build_info']['args']);
 
     if (!empty($view->result)) {
       // Change the Save button to say Update cart.
-      $form['actions']['submit']['#value'] = t('Update cart');
+      if ($language== '/pl')
+        $form['actions']['submit']['#value'] = t('Oblicz');
+      else
+        $form['actions']['submit']['#value'] = t('Update cart');
+      
       $form['actions']['submit']['#submit'] = array_merge($form['#submit'], array('commerce_cart_line_item_views_form_submit'));
 
       // Change any Delete buttons to say Remove.
