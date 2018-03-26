@@ -2,7 +2,7 @@
 
 <?php
 $adres=$_SERVER['REQUEST_URI'];
-$jezyk=substr($adres,0,3);
+$language=substr($adres,0,3);
 ?>
 
 <?php if($header_top): ?>
@@ -127,14 +127,14 @@ $jezyk=substr($adres,0,3);
                     <?php global $user;
                     if($user->uid): ?>
                       <a href="<?php print url('user'); ?>" class="c-btn-border-opacity-04 c-btn btn-no-focus c-btn-header btn btn-sm c-btn-border-1x c-btn-dark c-btn-circle c-btn-uppercase c-btn-sbold">
-                        <i class="icon-user"></i> <?php if ($jezyk== '/pl')
+                        <i class="icon-user"></i> <?php if ($language== '/pl')
                           print t('Konto');
                           else
                           print t('Account');  ?>
                       </a>
                     <?php else: ?>
                       <a href="<?php print url('user'); ?>" class="c-btn-border-opacity-04 c-btn btn-no-focus c-btn-header btn btn-sm c-btn-border-1x c-btn-dark c-btn-circle c-btn-uppercase c-btn-sbold">
-                        <i class="icon-user"></i> <?php if ($jezyk== '/pl')
+                        <i class="icon-user"></i> <?php if ($language== '/pl')
                           print t('Zaloguj');
                           else
                           print t('Log in'); ?>
