@@ -1043,7 +1043,7 @@ function commerce_checkout_completion_message_default() {
   }
   else {
     // Otherwise select a fallback format and use a plain text default value.
-    $value = 'Your order number is [commerce-order:order-number]. You can view your order on your account page when logged in.';
+    $value = 'Twój numer zamówienia to [commerce-order:order-number]. Możesz zobaczyć swoje zamówienie na stronie konta po zalogowaniu.';
     $format = filter_fallback_format();
   }
 
