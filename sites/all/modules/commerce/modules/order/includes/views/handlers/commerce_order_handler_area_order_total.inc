@@ -100,6 +100,11 @@ class commerce_order_handler_area_order_total extends views_handler_area {
                 $field['#title'] = $this->options['label_custom'];
               }
 
+              $adres=$_SERVER['REQUEST_URI'];
+              $language=substr($adres,0,3);
+              if ($language== '/pl') {
+                $field['0']['#markup'] = str_replace("Order total", "Łącznie", $field['0']['#markup']) ;
+              }
               return '<div class="commerce-order-handler-area-order-total">' . drupal_render($field) . '</div>';
             }
           }

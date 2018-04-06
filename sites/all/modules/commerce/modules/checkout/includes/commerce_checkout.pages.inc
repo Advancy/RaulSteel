@@ -157,6 +157,11 @@ function commerce_checkout_form($form, &$form_state, $order, $checkout_page) {
 
       // Create a fieldset for the pane and add the form data defined in the
       // pane's form callback.
+      $adres=$_SERVER['REQUEST_URI'];
+      $language=substr($adres,0,3);
+      if ($language== '/pl') {
+        $checkout_pane['title'] = str_replace("Billing information", "Informacje do zamówienia", $checkout_pane['title']) ;
+      }
       if ($pane_form) {
         $form[$pane_id] = $pane_form + array(
           '#type' => $checkout_pane['fieldset'] ? 'fieldset' : 'container',
