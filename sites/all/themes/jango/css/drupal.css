@@ -606,7 +606,7 @@ table.checkout-review tr td{
 
 /* Cart block */
 .c-cart-menu{
-  z-index: 100;
+  z-index: 200;
 }
 .c-layout-header .cart-empty-block,
 #block-commerce-cart-cart > h2,
