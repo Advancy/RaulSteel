@@ -40,7 +40,7 @@ if(user_access('use nikadevs cms')) {
 $class .= $columns == 2 ? ' c-item-size-double' : '';
 global $counter_delay;
 ?>
-<div class="c-content-isotope-item wow animate zoomIn <?php print $class; ?>" data-wow-delay="<?php print $counter_delay; ?>s">
+<div class="c-content-isotope-item <?php print $class; ?>" data-wow-delay="<?php print $counter_delay; ?>s">
   <?php print $links;?>
     <div class="c-content-isotope-image-container">
         <?php print _views_field($fields, 'field_images'); ?>
