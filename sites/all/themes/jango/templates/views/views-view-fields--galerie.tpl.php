@@ -44,7 +44,7 @@ global $counter_delay;
   <?php print $links;?>
     <div class="c-content-isotope-image-container">
         <?php print _views_field($fields, 'field_images'); ?>
-        <div class="c-content-isotope-overlay c-ilightbox-image-1" href="<?php print $path; ?>" data-options="thumbnail:'<?php print $path; ?>'" data-caption="<h4><?php print _views_field($fields, 'title') ?></h4><?php print _views_field($fields, 'body'); ?>">
+        <div class="c-content-isotope-overlay c-ilightbox-image-1" href="<?php print $path; ?>" data-options="thumbnail:'<?php print $path; ?>'">
           <div class="c-content-isotope-overlay-icon">
               <i class="fa fa-plus c-font-white"></i>
           </div>
