@@ -124,23 +124,38 @@ $language=substr($adres,0,3);
                 <?php endif;
                 if($login): ?>
                   <li>
+                    <lu>
                     <?php global $user;
                     if($user->uid): ?>
-                      <a href="<?php print url('user'); ?>" class="c-btn-border-opacity-04 c-btn btn-no-focus c-btn-header btn btn-sm c-btn-border-1x c-btn-dark c-btn-circle c-btn-uppercase c-btn-sbold">
+                      <a href="<?php print url('user'); ?>" class="c-btn-border-opacity-04 c-btn btn-no-focus c-btn-header btn btn-sm c-btn-border-1x c-btn-dark c-btn-circle c-btn-uppercase c-btn-sbold test">
                         <i class="icon-user"></i> <?php if ($language== '/pl')
                           print t('Konto');
                           else
                           print t('Account');  ?>
                       </a>
+                      
                     <?php else: ?>
-                      <a href="<?php print url('user'); ?>" class="c-btn-border-opacity-04 c-btn btn-no-focus c-btn-header btn btn-sm c-btn-border-1x c-btn-dark c-btn-circle c-btn-uppercase c-btn-sbold">
+                      <a href="<?php print url('user'); ?>" class="c-btn-border-opacity-04 c-btn btn-no-focus c-btn-header btn btn-sm c-btn-border-1x c-btn-dark c-btn-circle c-btn-uppercase c-btn-sbold test">
                         <i class="icon-user"></i> <?php if ($language== '/pl')
                           print t('Zaloguj');
                           else
                           print t('Log in'); ?>
                       </a>
                     <?php endif; ?>
-                  </li>
+                  </lu>
+                  
+                  <lu>
+                  <?php global $user;
+                    if($user->uid): ?>
+                    <a href="<?php print url('user/logout'); ?>" class="c-btn-border-opacity-04 c-btn btn-no-focus c-btn-header btn btn-sm c-btn-border-1x c-btn-dark c-btn-circle c-btn-uppercase c-btn-sbold test">
+                        <i class="icon-user"></i> <?php if ($language== '/pl')
+                          print t('Wyloguj');
+                          else
+                          print t('Log out');  ?>
+                      </a>
+                      <?php endif; ?>
+                  </lu>
+              </li>
                 <?php endif; ?>
 
                 <?php if(strpos($_SERVER['HTTP_HOST'], 'nikadevs') !== FALSE || $_SERVER['HTTP_HOST'] == 'development'): ?>

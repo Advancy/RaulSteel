@@ -39,9 +39,7 @@ $user = user_load(arg(1));
   <h3 class="c-font-uppercase c-font-bold"><?php print t('My Dashboard'); ?></h3>
   <div class="c-line-left"></div>
   <p class=""> <?php print t('Hello'); ?>
-      <a href="<?php print url('user/' . $user->uid); ?>" class="c-theme-link"><?php print $user->name; ?></a> <?php print t('(not'); ?>
-      <a href="<?php print url('user/' . $user->uid); ?>" class="c-theme-link"><?php print $user->name; ?></a>?
-      <a href="<?php print url('user/logout'); ?>" class="c-theme-link"><?php print t('Sign out'); ?></a>).
+      <a href="<?php print url('user/' . $user->uid); ?>" class="c-theme-link"><?php print $user->name; ?></a> 
       <br> </p>
 </div>
 <div class="profile row"<?php print $attributes; ?>>

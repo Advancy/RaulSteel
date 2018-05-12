@@ -2999,7 +2999,8 @@ h1 {
           .c-layout-header .c-navbar .c-mega-menu > .nav.navbar-nav > li > .c-link:hover {
             background: none; }
         .c-layout-header .c-navbar .c-mega-menu > .nav.navbar-nav > li > .c-btn {
-          margin: 15px 15px 5px 15px; }
+          margin: 15px 15px 5px 15px; 
+          width: 200px;}
         .c-layout-header .c-navbar .c-mega-menu > .nav.navbar-nav > li > .c-search-toggler {
           display: none; }
         .c-layout-header .c-navbar .c-mega-menu > .nav.navbar-nav > li > .c-quick-sidebar-toggler {
@@ -4310,7 +4311,8 @@ h1 {
 
 @media (max-width: 1406px) {
   /* 991px */
-  .c-layout-header .c-navbar .c-mega-menu.c-mega-menu-dark-mobile > .nav.navbar-nav > li > .c-btn {
+  .c-layout-header .c-navbar .c-mega-menu.c-mega-menu-dark-mobile > .nav.navbar-nav > li > .c-btn
+   {
     border-color: #ccd1de;
     color: #ccd1de; }
     .c-layout-header .c-navbar .c-mega-menu.c-mega-menu-dark-mobile > .nav.navbar-nav > li > .c-btn:focus,
@@ -12328,3 +12330,28 @@ h1 {
     margin: 0; }
   .c-progress-bar .c-progress-bar-desc-container {
     margin: 0 0 30px 0; } }
+
+@media (min-width: 1406px){
+  .test{
+    transition: margin 0.2s;
+    margin: 34px 15px 33px 15px;
+  }
+}    
+
+@media (max-width: 1406px) {
+      /* 991px */
+      .test
+       {
+        margin-left: 20px !important;
+        margin-bottom: 10px !important;
+        margin-top: 10px !important;
+        border-color: #ccd1de !important;
+        color: #ccd1de !important; }
+        .test:focus,
+        .test:active,
+        .test.active,
+        .test:hover {
+          color: #394048 !important;
+          background: #ffffff !important; } 
+        }
+
