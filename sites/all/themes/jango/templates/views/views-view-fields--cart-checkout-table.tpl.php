@@ -24,13 +24,21 @@ $unit_price = trim(strip_tags(_views_field($fields, 'commerce_unit_price')));
 $total_price = trim(strip_tags(_views_field($fields, 'commerce_total')));
 $delete = _views_field($fields, 'edit_delete');
 $title = _views_field($fields, 'line_item_title');
+$adres=$_SERVER['REQUEST_URI'];
+$language=substr($adres,0,3);
+if ($language== '/pl') {
+$href='http://raulsteel.pl/pl/';
+} else {
+  $href='http://raulsteel.pl/en/';
+}
+
 ?>
 <h2 class="c-font-uppercase c-font-bold c-theme-bg c-font-white c-cart-item-title c-cart-item-first"><?php print $title; ?></h2>
 <div class="col-md-2 col-sm-3 col-xs-5 c-cart-image">
   <?php print _views_field($fields, 'field_images'); ?></div>
 <div class="col-md-4 col-sm-9 col-xs-7 c-cart-desc">
   <h3>
-    <a href="<?php print _views_field($fields, 'commerce_display_path'); ?>" class="c-font-bold c-theme-link c-font-22 c-font-dark"><?php print $title; ?></a>
+    <a href="<?php print $href . _views_field($fields, 'commerce_display_path'); ?>" class="c-font-bold c-theme-link c-font-22 c-font-dark"><?php print $title; ?></a>
   </h3>
   <?php foreach ($fields as $id => $field): 
     if($field->content):  ?>
