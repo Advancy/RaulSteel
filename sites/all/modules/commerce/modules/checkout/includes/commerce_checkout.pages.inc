@@ -466,8 +466,13 @@ function theme_commerce_checkout_review($variables) {
 
   // Turn the review data array into table rows.
   $rows = array();
-
+  $adres=$_SERVER['REQUEST_URI'];
+  $language=substr($adres,0,3);
   foreach ($form['#data'] as $pane_id => $data) {
+    // Translations
+    if ($language== '/pl') {
+      $data['title'] = str_replace("Billing information", "Informacje do zamówienia", $data['title']) ;
+    }
     // First add a row for the title.
     $rows[] = array(
       'data' => array(
