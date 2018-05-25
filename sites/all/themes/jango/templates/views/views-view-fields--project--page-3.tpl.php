@@ -26,22 +26,15 @@
 $image = _get_node_field($row, 'field_field_images');
 $path = isset($image[0]) ? file_create_url($image[0]['raw']['uri']) : '';
 
-$links = '';
 $class = '';
 $id =  $view->vid . '-' . $view->current_display . '-' . _views_field($fields, 'nid') . '-' . $image[0]['raw']['fid'];
 $settings = variable_get('jango_isotope_gallery', array());
 $columns = isset($settings[$id]) ? $settings[$id] : 1;
-if(user_access('use nikadevs cms')) {
-  $class = 'contextual-links-region ';
-  $links = array('<a href = "#1">1 '. t('column'). '</a>', '<a href = "#2">2 ' . t('columns') . '</a>');
-  $links = '<div class="contextual-links-wrapper">' . theme('item_list', array('items' => $links, 'attributes' => array('data-id' => $id,'class' => array('contextual-links', 'isotope-gallery-action')))) . '</div>';
-}
 // Process the size
 $class .= $columns == 2 ? ' c-item-size-double' : '';
 global $counter_delay;
 ?>
 <div class="c-content-isotope-item wow animate zoomIn <?php print $class; ?>" data-wow-delay="<?php print $counter_delay; ?>s">
-  <?php print $links;?>
     <div class="c-content-isotope-image-container">
         <?php print _views_field($fields, 'field_images'); ?>
         <div class="c-content-isotope-overlay c-ilightbox-image-1" href="<?php print $path; ?>" data-options="thumbnail:'<?php print $path; ?>'" data-caption="<h4><?php print _views_field($fields, 'title') ?></h4><?php print _views_field($fields, 'body'); ?>">
