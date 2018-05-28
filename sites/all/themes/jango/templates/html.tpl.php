@@ -57,6 +57,10 @@
 </head>
 <body class="<?php print $classes; ?>" <?php print $attributes;?>>
 
+
+
+
+
   <!-- START PARAMETRY KOSZYKA -->
 
     <?php $node = menu_get_object(); if ($node && ($node->nid == '300' || $node->nid == '301' || $node->nid == '302' || $node->nid == '303') ): ?>
@@ -149,5 +153,25 @@
   <!--[if lt IE 9]>
 	<script src="../assets/global/plugins/excanvas.min.js"></script> 
 	<![endif]-->
+
+
+<?php
+  $adres=$_SERVER['REQUEST_URI'];
+  $language=substr($adres,0,3);
+    // Translations
+    if ($language== '/pl') :
+?>
+        <script>
+            var doc = document.getElementsByClassName(' field field-name-commerce-customer-billing field-type-commerce-customer-profile-reference field-label-above')[0]
+            var notes = null;
+            for (var i = 0; i < doc.childNodes.length; i++) {
+                if (doc.childNodes[i].className == "field-span") {
+                    notes = doc.childNodes[i];
+                    break;
+                }        
+            }
+            notes.innerHTML="Dane do dostawy";
+        </script>
+<?php endif; ?>
 </body>
 </html>
