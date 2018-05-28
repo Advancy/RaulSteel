@@ -530,8 +530,14 @@ function theme_commerce_price_formatted_components($variables) {
 
   // Build table rows out of the components.
   $rows = array();
+  $adres=$_SERVER['REQUEST_URI'];
+  $language=substr($adres,0,3);
 
   foreach ($variables['components'] as $name => $component) {
+    // Translations
+    if ($language== '/pl') {
+      $component['title'] = str_replace("Order total", "Łącznie", $component['title']) ;
+    }
     $rows[] = array(
       'data' => array(
         array(
